@@ -18,7 +18,7 @@ int main(int argc,char* argv[])
     read(fd2,szbuf,sizeof(szbuf));
     puts(szbuf);
     close(fd2);
-    //--------------------------
+    /*/--------------------------
     int fd=open("b.txt",O_WRONLY|O_CREAT);
     if(fd==-1)
     {
@@ -29,11 +29,12 @@ int main(int argc,char* argv[])
     close(1);//关闭标准输出;
     int fd3=dup(fd);//fd2分配为未用最低位即１;
     printf("hello world to b.txt\n");//printf指向１即b.txt
-    close(fd3);
+    close(fd3);*/
     //---------------------------
-    memset(szbuf,0,32);
+	//memset(szbuf,0,32);
     int fda=open("./a.txt",O_RDONLY);
     int fdb=open("./b.txt",O_RDONLY);
+	printf("fdb 1th is:%d",fdb);
     int fdbb=dup(fdb);
     int f1=dup2(fda,fdb);
     printf("f1:%d",f1);
