@@ -1,0 +1,5 @@
+5my_ls:5my_ls.c
+	gcc -o $@ $^
+.PHONY:clean
+clean:
+	rm -rf my_ls
