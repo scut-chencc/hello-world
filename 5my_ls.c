@@ -47,7 +47,9 @@ int main( int argc,char* argv[ ])
 		  char per[ 11];
 	show_permit( file_stat.st_mode,per);
 	ptime=ctime( &file_stat.st_mtime);
+	printf( " 1st is:%s" ,ptime);//da yin huan hang
 	time_make( ptime);
+	printf( " 2nd is:%s" ,ptime);//da yin bu huan hang
 	printf( " %10s %d %5s %5s %ld %s %s\n" ,per,file_stat.st_nlink,(getpwuid( file_stat.st_uid))->pw_name,( getgrgid( file_stat.st_gid))->gr_name,file_stat.st_size,ptime+4,dir_info->d_name) ;
 }
 return 0;
