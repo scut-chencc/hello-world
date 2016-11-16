@@ -9,6 +9,11 @@ typedef struct student
 	 int num;
 	 char name[ 16];
 }std_t;
+typedef struct student2
+{
+	 char num[ 5];
+	 char name[15];
+}std_t2;
 int main( int argc,char* argv[ ])
 {
 	 if( argc!=2)
@@ -49,16 +54,31 @@ int main( int argc,char* argv[ ])
 	 }
 	 //read
 	 memset( std,0,sizeof( std));
-	 ret=read( fd,&std[ 0],40);
+	 ret=read( fd,&std[ 0],54);
 	 if( -1==ret)
 	 {
 		  perror( " read" );
 		  exit( -1);
 	 }
+	 //lseek to head for 2nd read
+	 ret=lseek( fd,0,SEEK_SET);
+	 std_t2 std2[ 2];
+	 memset( std2,0,sizeof( std2));
+	 ret=read( fd,&std2[ 0],54);
+	 if( -1==ret)
+	 {
+		  perror( " read" );
+		  exit( -1);
+	 }
+
 	 int i;
 	 for(i=0;i<2;i++)
 	 {
 		  printf( " the num is %d,the name is %s\n" ,std[ i].num,std[ i].name);
+	 }
+	 for(i=0;i<2;i++)
+	 {
+		  printf( " the num is %s,the name is %s\n" ,std2[ i].num,std2[ i].name);
 	 }
 	 ret=close( fd);
 	 if( -1==ret)
