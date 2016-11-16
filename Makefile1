@@ -1,0 +1,7 @@
+OBJS:=5my_ls.c
+ELF:=5my_ls
+$(ELF):$(OBJS)
+	gcc -o $@ $^
+.PHONY:clean
+clean:
+	rm -rf $(ELF)
