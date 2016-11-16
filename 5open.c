@@ -17,7 +17,9 @@ int main( int argc,char* argv[ ])
 		  exit( -1);
 	 }
 	 int fd;
-	 fd=open( argv[ 1],O_RDWR|O_CREAT,0666);
+	 //fd=open( argv[ 1],O_RDWR|O_APPEND);
+	 //fd=open( argv[ 1],O_RDWR|O_CREAT,0666);
+	 fd=open( argv[ 1],O_RDWR|O_TRUNC,0666);
 	 if( -1==fd)
 	 {
 		  perror(" open"  );
@@ -35,7 +37,14 @@ int main( int argc,char* argv[ ])
 	 ret=write( fd,&std[0],40);
 	 if( -1==ret)
 	 {
-		  perror( " write" );
+	      perror( " write" );
+	      exit( -1);
+	 }
+	 //lseek to head of file for read
+	 ret=lseek( fd,0,SEEK_SET);
+	 if( -1==ret)
+	 {
+		  perror( " seek" );
 		  exit( -1);
 	 }
 	 //read
@@ -51,7 +60,6 @@ int main( int argc,char* argv[ ])
 	 {
 		  printf( " the num is %d,the name is %s\n" ,std[ i].num,std[ i].name);
 	 }
-	 printf( " the std is: %x\n" ,std );
 	 ret=close( fd);
 	 if( -1==ret)
 	 {
