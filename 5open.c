@@ -51,6 +51,7 @@ int main( int argc,char* argv[ ])
 	 {
 		  printf( " the num is %d,the name is %s\n" ,std[ i].num,std[ i].name);
 	 }
+	 printf( " the std is: %x\n" ,std );
 	 ret=close( fd);
 	 if( -1==ret)
 	 {
