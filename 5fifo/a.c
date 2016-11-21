@@ -21,7 +21,9 @@ int main( int argc,char* argv[ ])
 	 }
 	 printf( " the fdr is %d\n" ,fdr);
 	 char buf[ 128];
-	 bzero( buf,sizeof( buf));
-	 read( fdr,buf,sizeof( buf));
+	 while( bzero( buf,sizeof( buf)),read( fdr,buf,sizeof( buf))>0)
+	 {
+		  printf( "%s\n" ,buf);
+	 }
 	 return 0;
 }

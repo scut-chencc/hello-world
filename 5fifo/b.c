@@ -4,7 +4,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <strings.h>
-
+#include <string.h>
+#include <unistd.h>
 int main( int argc,char* argv[ ])
 {
 	 if( argc!=2)
@@ -12,16 +13,19 @@ int main( int argc,char* argv[ ])
 		  printf( " error args\n" );
 		  return -1;
 	 }
-	 int fdr;
-	 fdr=open( argv[ 1],O_RDONLY);
-	 if( -1==fdr)
+	 int fdw;
+	 fdw=open( argv[ 1],O_WRONLY);
+	 if( -1==fdw)
 	 {
 		  perror( " open" );
 		  return -1;
 	 }
-	 printf( " the fdr is %d\n" ,fdr);
+	 printf( " the fdw is %d\n" ,fdw);
 	 char buf[ 128];
-	 bzero( buf,sizeof( buf));
-	 read( fdr,buf,sizeof( buf));
+	 int ret;
+	 while(bzero( buf,sizeof( buf)),(ret=read(STDIN_FILENO,buf,sizeof( buf) ))>0){
+		 // write( fdw,buf,ret-1);//这样不用打印换行符
+		 write( fdw,buf,ret);//打印了最后的换行符
+	 }
 	 return 0;
 }
