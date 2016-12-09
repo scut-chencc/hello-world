@@ -34,7 +34,7 @@ int main( )
 		  perror( "semget" );
 		  exit( -1);
 	 }
-	 int ret=semctl( sem_id,0,SETVAL,1);
+	 int ret=semctl( sem_id,0,SETVAL,1);//只设置一次就可以了；
 	 if( -1==ret)
 	 {
 		  perror(" semctl" );
@@ -65,11 +65,11 @@ int main( )
 		  perror( "shmdt" );
 		  exit( -1);
 	 }
-	 ret=semctl( sem_id,0,IPC_RMID);
+	 ret=semctl( sem_id,0,IPC_RMID);//因为要在另一个操作完之后才能删除信号量；
 	 if( -1==ret)
 	 {
-		  perror( "semctl1" );
-		  exit( -1);
+	      perror( "shm_r:semctl1" );
+	      exit( -1);
 	 }
 	 return 0;
 }

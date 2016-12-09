@@ -34,12 +34,12 @@ int main( )
 		  perror( "semget" );
 		  exit( -1);
 	 }
-	 int ret=semctl( sem_id,0,SETVAL,1);
-	 if( -1==ret)
-	 {
-		  perror(" semctl" );
-		  exit(-1);
-	 }
+	 //int ret=semctl( sem_id,0,SETVAL,1);
+	 //if( -1==ret)
+	 //{
+	 //     perror(" semctl" );
+	 //     exit(-1);
+	 //}
 	 struct sembuf sem1;
 	 sem1.sem_num=0;
 	 sem1.sem_op=-1;
@@ -59,17 +59,18 @@ int main( )
 		  semop( sem_id,&sem2,1);
 	 }
 	 printf( "the val is %d\n" ,pdata->val);
-	 ret=shmdt(shmp);
+	 int ret=shmdt(shmp);
 	 if( -1==ret)
 	 {
 		  perror( "shmdt" );
 		  exit( -1);
 	 }
-	 ret=semctl( sem_id,0,IPC_RMID);
-	 if( -1==ret)
-	 {
-		  perror( "semctl1" );
-		  exit( -1);
-	 }
+	 //sleep( 500);//等待另一个进程操作结束；
+	 //ret=semctl( sem_id,0,IPC_RMID);
+	 //if( -1==ret)
+	 //{
+	 //     perror( "semctl1" );
+	 //     exit( -1);
+	 //}
 	 return 0;
 }
