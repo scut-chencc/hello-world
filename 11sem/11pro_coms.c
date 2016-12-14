@@ -12,15 +12,15 @@ void init( );
 int main( ){
 	init( );
 	if(!fork( ))
-	{
+	{//xiaofeizhe
 		struct sembuf sem_pc[ 2];
 		while( 1)
 		{
 
-			sem_pc[ 0].sem_num=0;
+			sem_pc[ 0].sem_num=0;//yiyong
 			sem_pc[ 0].sem_op=-1;
 			sem_pc[ 0].sem_flg=SEM_UNDO;
-			sem_pc[ 1].sem_num=1;
+			sem_pc[ 1].sem_num=1;//shengyu
 			sem_pc[ 1].sem_op=1;
 			sem_pc[ 1].sem_flg=SEM_UNDO;
 			int ret=semop( sem_id,sem_pc,1) ;
@@ -41,17 +41,17 @@ int main( ){
 
 		}
 	}
-	else{
+	else{//shengchanzhe
 		 
 		struct sembuf sem_pc[ 2];
 		while( 1)
 		{
 
-			sem_pc[ 0].sem_num=0;
-			sem_pc[ 0].sem_op=1;
+			sem_pc[ 0].sem_num=1;//shengyu
+			sem_pc[ 0].sem_op=-1;
 			sem_pc[ 0].sem_flg=SEM_UNDO;
-			sem_pc[ 1].sem_num=1;
-			sem_pc[ 1].sem_op=-1;
+			sem_pc[ 1].sem_num=0;//yiyong
+			sem_pc[ 1].sem_op=1;
 			sem_pc[ 1].sem_flg=SEM_UNDO;
 			int ret=semop( sem_id,sem_pc,1) ;
 			if( -1==ret)
