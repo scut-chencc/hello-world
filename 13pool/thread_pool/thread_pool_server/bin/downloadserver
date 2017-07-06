@@ -1,0 +1,121 @@
+#include"factory.h"
+#define FILE_NAME "server.c"
+void send_n(int sockfd, char*p, int len);
+void handle_request(int sockfd);
+void* con_handle(void* arg);
+int main(int argc, char* argv[])
+{
+	if(argc != 3)
+	{
+		printf("EXE IP PORT ! \n");
+		exit(1);
+	}
+	factory_t my_factory ;
+	factory_init(&my_factory, con_handle, NULL, 10, 0, 100);
+	factory_start(&my_factory);
+	printf("factory start ! \n");
+	//socket
+	int fd_listen ;
+	if((fd_listen = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+	{
+		perror("socket !");
+		exit(1);
+	}
+	//bind
+	struct sockaddr_in server_addr ;
+	signal(SIGCHLD, sig_handle);
+	signal(SIGINT, SIG_IGN);
+	signal(3, SIG_IGN);
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET ;
+	server_addr.sin_port = htons( atoi(argv[2]) ) ;
+	server_addr.sin_addr.s_addr = inet_addr(argv[1]);
+	if(-1 == bind(fd_listen,(const struct sockaddr*)&server_addr, sizeof(server_addr)))
+	{
+		perror("bind");
+		close(fd_listen);
+		exit(1);
+	}
+	//listen
+	if(-1 == listen(fd_listen, 10))
+	{
+		perror("listen");
+		close(fd_listen);
+		exit(1);
+	}
+	//accept
+	while(1)
+	{
+		printf("accepting...! \n");
+		struct sockaddr_in client_addr ;
+		socklen_t len = sizeof(client_addr);
+		pnode_t pnew = (pnode_t)calloc(1, sizeof(node_t));
+		pnew ->nd_sockfd = accept(fd_listen,(struct sockaddr*)&client_addr, &len );
+		printf("client: %s:%d connected ! \n",inet_ntoa(client_addr.sin_addr),ntohs(client_addr.sin_port));
+		//	handle_request(fd_client);
+		pthread_mutex_lock(&my_factory.ft_que.que_mutex);
+		factory_que_set(&my_factory, pnew);
+		pthread_mutex_unlock(&my_factory.ft_que.que_mutex);
+		pthread_mutex_signal(&my_factory.ft_con_cond);
+		//		close(fd_client);
+
+
+	}	
+	//close
+	close(fd_listen);
+	return 0 ;
+}
+void handle_request(int sockfd)
+{
+	MSG send_msg;
+	memset(&send_msg, 0, sizeof(MSG));
+	strcpy(send_msg.msg_buf, FILE_NAME);
+	send_msg.msg_len = strlen(send_msg.msg_buf);
+	send_n(sockfd, (char*)&send_msg, 4 + send_msg.msg_len);
+	int fd_file = open(FILE_NAME, O_RDONLY);
+	char buf[32];
+	int readn ;
+	while(memset(&send_msg, 0, sizeof(MSG)), (send_msg.msg_len = read(fd_file, send_msg.msg_buf, sizeof(send_msg.msg_buf))) > 0)
+	{
+		send_n(sockfd,(char*)&send_msg, 4 + send_msg.msg_len);
+		//		sleep(1);
+	}
+	send_n(sockfd,(char*)&send_msg, 4 + send_msg.msg_len);
+	sleep(rand()%5 + 1);
+	close(fd_file);
+	close(sockfd);
+}
+void send_n(int sockfd, char*p, int len)
+{
+	int send_sum, send_ret ;
+	send_sum = 0;
+	while(send_sum < len)
+	{
+		send_ret = send(sockfd, p + send_sum, len - send_sum, 0);
+		send_sum += send_ret ;
+	}
+}
+void* con_handle(void* arg)
+{
+	pfactory_t pf = (pfactory_t)arg ;
+	pque_t pq = pf ->ft_que ;
+	pnode_t ptask ;
+	while(1)
+	{
+		pthread_mutex_lock(&pq ->que_mutex);
+		while(factory_que_empty(pq))
+		{
+			pthread_cond_wait(&pf ->ft_con_cond, &pq ->que_mutex);
+		}
+		factory_que_get(pq, &ptast);
+		pthread_mutex_unlock(&pq ->que_mutex);
+
+		handle_request(ptask ->nd_sockfd);
+
+		close(ptast ->nd_sockfd);
+
+		free(ptask);
+	}
+}
+
+
