@@ -31,7 +31,7 @@ void handler(int sig)
 	exit(EXIT_SUCCESS);
 }
 
-ssize_t readn(int fd,void* buf,size_t count) 
+ssize_t readn(int fd,void* buf,size_t count)
 {
 	size_t nleft=count;
 	ssize_t nread;
