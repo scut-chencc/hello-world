@@ -77,7 +77,7 @@ ssize_t recv_peek(int sockfd,void* buf,size_t len)
 {
 	while(1)
 	{
-		int ret=recv(sockfd,buf,len,MSG_PEEK);//窥探数据，不从套接口缓冲区删除
+		int ret=recv(sockfd,buf,len,MSG_PEEK);//窥探数据，不从 套接口缓冲区删除
 		if(ret==-1&& errno==EINTR)
 			continue;
 		return ret;
